@@ -1,0 +1,16 @@
+*
+
+!.gitignore
+!*.md
+!*.xpr
+!*.v
+!*.png
+!*.PNG
+!*.jpg
+!*.JPG
+!*.xdc
+!*.wcfg
+!src/
+!sim/
+!constrs/
+!pics/
