@@ -1,4 +1,4 @@
-# Assignment for Lab 05 Verilog Into
+# Assignment for Lab 05 Verilog Intro
 
 This assignment is preparing you for future submission. Most of the code for both problems are already written in class, the part that has not written yet should be
 very straight forward. You must make sure your submission satisfy all the requirement in order to get full credit.
@@ -40,3 +40,9 @@ Your simulation sets should look something like this before you submit:
 - Write a test module to verify the correctness of your adder subtractor.
 - Save your timing diagram.
 
+### Extra Credit
+- Used either [generate block](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=25) or [array of instances](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=22) to implement a N-bit ripple adder
+- Implementation (1pt)
+- Test your with a 8-bit instance (1pt)
+  - Name the simulation set as "N\_bit\_ripple\_test"
+- **Due Feb 20, 2018**

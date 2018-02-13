@@ -4,6 +4,23 @@
 - [FPGA Prototyping By Verilog Examples: Xilinx Spartan-3 Version](https://www.amazon.com/FPGA-Prototyping-Verilog-Examples-Spartan-3/dp/0470185325/)
 - [Quick Reference Guide](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf)
 
+## [Transistor Count of CPUs](https://en.wikipedia.org/wiki/Transistor_count)
+
+| Processor | Year | Transistor count|
+| --------- |:----:| ----------------:|
+| MOS Technology 6502 | 1975 | 3,510 |
+| Intel 8085 | 1976 | 6,500 |
+| Intel 8086 | 1978 | 29,000 |
+| Quad-core + GPU GT2 Core i7 Skylake K | 2015 | 1,750,000,000
+| NVIDIA GV100 Volta | 2017 | 21,100,000,000 |
+
+## Commonly used HDL (Hardware Description Languages)
+
+- Verilog
+- VHDL
+- [Chisel (Constructing Hardware in a Scala Embedded Language)](https://chisel.eecs.berkeley.edu)
+
+
 ## Verilog
 
 - It is a **H**ardware **D**escription **L**anguage. 
@@ -15,13 +32,6 @@
   - Simulation for all the modeling
 
 
-| Processor | Year | Transistor count|
-| --------- |:----:| ----------------:|
-| Intel 8085 | 1976 | 6,500 |
-| Intel 8086 | 1978 | 29,000 |
-| Quad-core + GPU GT2 Core i7 Skylake K | 2015 | 1,750,000,000
-| NVIDIA GV100 Volta | 2017 | 21,100,000,000 |
-
 <!-- ### [Reserved Keywords](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=7) -->
 <!-- ### [Concurrency](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=8) -->
 - [Basic Syntax](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=8)
@@ -30,11 +40,11 @@
     - Interconnecting wire, connect output to input
     - Its value is driven by whatever the output it is connected to.
     - Can be either input or output type.
-  - **reg**
-    - A variable whose behavior need to be defined. **NOTE: It's not a register**
-    - Driver / behavior is defined in ```always``` or ```initial``` block.
-    - Could be used as output type.
-    - Should not be used as input type.
+  <!-- - **reg** -->
+  <!--   - A variable whose behavior need to be defined. **NOTE: It's not a register** -->
+  <!--   - Driver / behavior is defined in ```always``` or ```initial``` block. -->
+  <!--   - Could be used as output type. -->
+  <!--   - Should not be used as input type. -->
   - Logic Values
 
 	 | Logic Values | Description | Simulation Color |
@@ -44,8 +54,8 @@
 	 | **z** or **Z** | high impedence (tri-stated or floating) | Blue |
 	 | **x** or **X** | unknown or uninitialized or don't-care | Red |
 
-- [Operators](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=33)
-- [Module Definition](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=12)
+- [Operators (page 33)](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=33)
+- [Module Definition (page 12)](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=12)
 
   Example:
   - Behavior modeling:
@@ -73,7 +83,7 @@
   - By default, if you just specify input or output, the signal is assumed to be wire.
   - **Any undeclared signal** is assumed to be 1 bit wire.
 
-- [Module Instances](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=21)
+- [Module Instances (page 21)](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=21)
   Example:
   ```verilog
   module fulladder (input a, b, cin,
@@ -91,10 +101,10 @@
   ```
   - **Must** use dot syntax to instantiate modules for assignments
 
-- [Primitive Instances](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=23)
+- [Primitive Instances (page 23)](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=23)
   - Primitive instances do not use dot syntax
 
-- [Vector Bit Select and Part Selects](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=23)
+- [Vector Bit Select and Part Selects (page 23)](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=23)
   Example:
   ```verilog
   module ripple_adder_2bits(input [1:0] a, b,
@@ -109,16 +119,16 @@
   - ```initial```
     - Mostly used in simulation (or initializing registers, depending on compiler support)
     - Could have multiple ```initial``` block
-  - ```always```
-    - It is used for defining behaviors of **reg** type
-    - We will talk more about this in the future
+  <!-- - ```always``` -->
+  <!--   - It is used for defining behaviors of **reg** type -->
+  <!--   - We will talk more about this in the future -->
 
 <!-- - [Common System Tasks and Functions](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=42) -->
-- [Generate Block](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=25)
+<!-- - [Generate Block](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=25) -->
 
 ## Vivado
 
-### [Download](https://www.xilinx.com/support/download.html)
+### [Download Vivado 2017.2](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools/2017-2.html)
 
 ### Installation
   - Make sure you select the WebPACK edition (first option). It's free, no license required, and has all the features we need.
@@ -211,3 +221,4 @@ Click on "zoom fit" to have the best view of your timing diagram
 
 ![zoom_fit](pics/zoom_fit_marked.png)
 
+### [Vivado Naming Convention](https://www.xilinx.com/support/documentation/sw_manuals/xilinx2017_2/ug973-vivado-release-notes-install-license.pdf#page=5)
