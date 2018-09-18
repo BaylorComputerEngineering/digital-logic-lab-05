@@ -27,22 +27,22 @@ Your simulation sets should look something like this before you submit:
 ## Problems
 
 ### 1. Implement and test a two bits ripple adder (5 pts)
-- Name the simulation set as "ripple_test"
-- Name the ripple adder module as "ripple_adder"
+- Name the simulation set as ```ripple_test```
+- Name the ripple adder module as ```ripple_adder```
 - Implmenent the ripple adder using the full adder module we have built in the lab
 - Write a test module to verify the correctness of your ripple adder
-- Save your timing diagram. So when I load your project and run this simulation, the saved timing diagram should show up, not the "untitle 1".
+- Save your timing diagram as ```ripple_test_sim```. So when I load your project and run this simulation, the saved timing diagram should show up, not the "untitle 1".
 
 ### 2. Implement and test a two bits adder subtractor (5 pts)
-- Name the simulation set as "adder\_subtractor\_test"
-- Name the adder subtractor module as "adder_subtractor"
-- Implement the adder subtractor using the ripple adder from problem 1.
+- Name the simulation set as ```adder_subtractor_test```
+- Name the adder subtractor module as ```adder_subtractor```
+- Implement the adder subtractor **using the ripple adder** from problem 1.
 - Write a test module to verify the correctness of your adder subtractor.
-- Save your timing diagram.
+- Save your timing diagram as ```adder_subtractor_test_sim```.
 
 ### Extra Credit
 - Used either [generate block](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=25) or [array of instances](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=22) to implement a N-bit ripple adder
+  - Name the ripple-adder module as ```RippleAdder-N```
 - Implementation (1pt)
-- Test your with a 8-bit instance (1pt)
+- Test your ripple adder using a 8-bit instance (1pt)
   - Name the simulation set as "N\_bit\_ripple\_test"
-- **Due Feb 20, 2018**
