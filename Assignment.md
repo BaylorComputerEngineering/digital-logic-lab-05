@@ -42,7 +42,7 @@ Your simulation sets should look something like this before you submit:
 
 ### Extra Credit
 - Used either [generate block](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=25) or [array of instances](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=22) to implement a N-bit ripple adder
-  - Name the ripple-adder module as ```RippleAdder-N```
+  - Name the ripple-adder module as ```RippleAdder_N```
 - Implementation (1pt)
 - Test your ripple adder using a 8-bit instance (1pt)
-  - Name the simulation set as "N\_bit\_ripple\_test"
+  - Name the simulation set as ```N_bit_ripple_test```
