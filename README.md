@@ -104,7 +104,7 @@
 - [Primitive Instances (page 23)](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=23)
   - Primitive instances do not use dot syntax
 
-- [Vector Bit Select and Part Selects (page 23)](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=23)
+- [Vector Bit Select and Part Selects (page 19)](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=19)
   Example:
   ```verilog
   module ripple_adder_2bits(input [1:0] a, b,
@@ -115,7 +115,7 @@
   ```
   Here, the two inputs a, b are vector bits, which means they are 2-bit input wires. While sum is a 2-bit output wire.
   
-- [Procedural Blocks](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=25)
+- [Procedural Blocks](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=27)
   - ```initial```
     - Mostly used in simulation (or initializing registers, depending on compiler support)
     - Could have multiple ```initial``` block
@@ -128,11 +128,13 @@
 
 ## Vivado
 
-### [Download Vivado 2017.2](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools/2017-2.html)
+### [Download Vivado 2017.2](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools/archive.html)
 
 ### Installation
   - Make sure you select the WebPACK edition (first option). It's free, no license required, and has all the features we need.
   - After installed vivado, [install board files](https://reference.digilentinc.com/reference/software/vivado/board-files)
+
+### [Vivado Naming Convention](https://www.xilinx.com/support/documentation/sw_manuals/xilinx2017_2/ug973-vivado-release-notes-install-license.pdf#page=5)
 
 ### Creating Project
 **Note**: the following screenshots are captured with Vivado 2017.2.1, layout might be a bit different but you should be able find all the buttons in 2014 version.
@@ -220,5 +222,3 @@ Click on run simulation, and here is the default layout:
 Click on "zoom fit" to have the best view of your timing diagram
 
 ![zoom_fit](pics/zoom_fit_marked.png)
-
-### [Vivado Naming Convention](https://www.xilinx.com/support/documentation/sw_manuals/xilinx2017_2/ug973-vivado-release-notes-install-license.pdf#page=5)
