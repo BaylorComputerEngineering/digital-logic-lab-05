@@ -34,27 +34,27 @@
    - Verilog
    - VHDL
    - [[https://chisel.eecs.berkeley.edu][Chisel (Constructing Hardware in a Scala Embedded Language)]]
-     - Compiles to verilog
+     - Compiles to verilog or C++
 
 ** Verilog Usage
    :PROPERTIES:
    :CUSTOM_ID: verilog
    :END:
-   - It is a *H*ardware *D*escription *L*anguage.
-   - A specification language, not a programming language.
+   # - It is a *H*ardware *D*escription *L*anguage.
+   - A specification language
    - It is used for
-   - Behavior modeling
-   - Gate level modeling
-   - Transistor level modeling
-   - Simulation for all the modeling
+     - Behavior modeling
+     - Gate level modeling
+     - Transistor level modeling
+     - Simulation for all the modeling
 
-#+BEGIN_HTML
-  <!-- ### [Reserved Keywords](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=7) -->
-#+END_HTML
+# #+BEGIN_HTML
+#   <!-- ### [Reserved Keywords](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=7) -->
+# #+END_HTML
 
-#+BEGIN_HTML
-  <!-- ### [Concurrency](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=8) -->
-#+END_HTML
+# #+BEGIN_HTML
+#   <!-- ### [Concurrency](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=8) -->
+# #+END_HTML
 
 * Verilog Intro
 *** Basic Building Block -- modules
@@ -62,6 +62,13 @@
     - Has input and output
       - modules that do not have IOs are used for testing only.
     - One module per verilog file
+    - For example:
+
+#+begin_src verilog :export code
+module halfadder (input a, b, output s, c); // <---- module declaration
+
+endmodule // halfadder
+#+end_src
 
 *** Procedural Blocks
 ***** Types
@@ -78,7 +85,7 @@
       - Used inside procedural blocks
       - Must be declared outside procedural blocks
       - Note :: reg is *not* register. Used to be, not anymore.
-*
+
 *** [[http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=15][Data Type Declarations]]
 
 -  *wire*
