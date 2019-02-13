@@ -14,7 +14,8 @@
 -  [[https://www.amazon.com/FPGA-Prototyping-Verilog-Examples-Spartan-3/dp/0470185325/][FPGA Prototyping By Verilog Examples: Xilinx Spartan-3 Version]]
 -  [[http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf][Quick Reference Guide]]
 
-** [[https://en.wikipedia.org/wiki/Transistor_count][Transistor Count of CPUs]]
+** Transistor Count of CPUs
+   source: https://en.wikipedia.org/wiki/Transistor_count
    :PROPERTIES:
    :CUSTOM_ID: transistor-count-of-cpus
    :END:

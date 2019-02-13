@@ -1,23 +1,23 @@
 - [Digital Logic Lab 05 - Verilog Intro](#digital-logic-lab-05---verilog-intro)
   - [References:](#references)
-  - [[Transistor Count of CPUs](https://en.wikipedia.org/wiki/Transistor_count)](#transistor-count-of-cpus)
+  - [Transistor Count of CPUs](#org698c5f6)
   - [Commonly used HDL (Hardware Description Languages)](#commonly-used-hdl-hardware-description-languages)
   - [Verilog Usage](#verilog)
-- [Verilog Intro](#orgb62c4e0)
-  - [Basic Building Block &#x2013; modules](#org66cdedb)
-  - [Procedural Blocks](#org09ea4fe)
-    - [Types](#org9fb25d4)
-  - [Data Types:](#org1a8abc7)
-    - [wire](#orgf9b40ae)
-    - [reg](#org4a3e310)
-    - [other types:](#org38c6b65)
-  - [Logic Values](#org1cba00a)
-  - [Literal Integer Numbers](#org0737ce4)
-  - [Operators](#org00f08e7)
-  - [Module Instances](#org5125ad9)
-  - [Primitive Instances](#org4d33ff1)
-  - [Vector bits](#orgee2f835)
-  - [Testing](#org142a858)
+- [Verilog Intro](#orgdd0f5fd)
+  - [Basic Building Block &#x2013; modules](#orgaf67b68)
+  - [Procedural Blocks](#org317df3a)
+    - [Types](#org118ea7f)
+  - [Data Types:](#org2716cf0)
+    - [wire](#org2fed2c8)
+    - [reg](#orgb21a819)
+    - [other types:](#org11a0592)
+  - [Logic Values](#orgca052c7)
+  - [Literal Integer Numbers](#org9a936ba)
+  - [Operators](#org6540628)
+  - [Module Instances](#org774aced)
+  - [Primitive Instances](#org2f1def1)
+  - [Vector bits](#orgad2eaae)
+  - [Testing](#org8189582)
 
 
 
@@ -34,9 +34,13 @@
 -   [Quick Reference Guide](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf)
 
 
-<a id="transistor-count-of-cpus"></a>
+<a id="org698c5f6"></a>
 
-## [Transistor Count of CPUs](https://en.wikipedia.org/wiki/Transistor_count)
+## Transistor Count of CPUs
+
+source: <https://en.wikipedia.org/wiki/Transistor_count>
+
+:CUSTOM<sub>ID</sub>: transistor-count-of-cpus
 
 | Processor                             | Year | Transistor count |
 |------------------------------------- |---- |---------------- |
@@ -69,12 +73,12 @@
     -   Simulation for all the modeling
 
 
-<a id="orgb62c4e0"></a>
+<a id="orgdd0f5fd"></a>
 
 # Verilog Intro
 
 
-<a id="org66cdedb"></a>
+<a id="orgaf67b68"></a>
 
 ## Basic Building Block &#x2013; modules
 
@@ -112,14 +116,14 @@ endmodule // halfadder
 ```
 
 
-<a id="org09ea4fe"></a>
+<a id="org317df3a"></a>
 
 ## Procedural Blocks
 
 See [Procedural Blocks (page 27)](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=27)
 
 
-<a id="org9fb25d4"></a>
+<a id="org118ea7f"></a>
 
 ### Types
 
@@ -129,14 +133,14 @@ See [Procedural Blocks (page 27)](http://sutherland-hdl.com/pdfs/verilog_2001_re
 -   **always** blocks are an infinite loop which process statements repeatedly.
 
 
-<a id="org1a8abc7"></a>
+<a id="org2716cf0"></a>
 
 ## Data Types:
 
 See [Data Type Declarations (page 15)](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=15)
 
 
-<a id="orgf9b40ae"></a>
+<a id="org2fed2c8"></a>
 
 ### wire
 
@@ -147,7 +151,7 @@ See [Data Type Declarations (page 15)](http://sutherland-hdl.com/pdfs/verilog_20
 -   **Note:** Any variable that is not declared, it is assumed to be 1-bit wire.
 
 
-<a id="org4a3e310"></a>
+<a id="orgb21a819"></a>
 
 ### reg
 
@@ -158,7 +162,7 @@ See [Data Type Declarations (page 15)](http://sutherland-hdl.com/pdfs/verilog_20
 -   When used in IO ports, only outputs can be declared as `reg`
 
 
-<a id="org38c6b65"></a>
+<a id="org11a0592"></a>
 
 ### other types:
 
@@ -174,7 +178,7 @@ endmodule // halfadder
 ```
 
 
-<a id="org1cba00a"></a>
+<a id="orgca052c7"></a>
 
 ## Logic Values
 
@@ -186,7 +190,7 @@ endmodule // halfadder
 | <font color="red"> *x* or *X*</font>  | unknown or uninitialized or don't-care  |
 
 
-<a id="org0737ce4"></a>
+<a id="org9a936ba"></a>
 
 ## Literal Integer Numbers
 
@@ -217,7 +221,7 @@ Example:
 | 6'bz     | 6 bits  | binary     | zzzzzz (z filled)         |
 
 
-<a id="org00f08e7"></a>
+<a id="org6540628"></a>
 
 ## Operators
 
@@ -236,7 +240,7 @@ endmodule // halfadder
 This is always called behavior modeling, since the xor and and operation is done using a operator.
 
 
-<a id="org5125ad9"></a>
+<a id="org774aced"></a>
 
 ## Module Instances
 
@@ -266,7 +270,7 @@ endmodule // fulladder
 ```
 
 
-<a id="org4d33ff1"></a>
+<a id="org2f1def1"></a>
 
 ## Primitive Instances
 
@@ -285,7 +289,7 @@ endmodule // halfadder
 ```
 
 
-<a id="orgee2f835"></a>
+<a id="orgad2eaae"></a>
 
 ## Vector bits
 
@@ -312,7 +316,7 @@ endmodule
 ```
 
 
-<a id="org142a858"></a>
+<a id="org8189582"></a>
 
 ## Testing
 
