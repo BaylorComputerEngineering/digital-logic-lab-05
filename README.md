@@ -3,14 +3,18 @@
   - [[Transistor Count of CPUs](https://en.wikipedia.org/wiki/Transistor_count)](#transistor-count-of-cpus)
   - [Commonly used HDL (Hardware Description Languages)](#commonly-used-hdl-hardware-description-languages)
   - [Verilog Usage](#verilog)
-- [Verilog Intro](#orga560c24)
-  - [Basic Building Block &#x2013; modules](#org088c1aa)
-  - [Procedural Blocks](#org9d0d2a9)
-    - [Types](#orgc6ee982)
-  - [Variable types:](#org89fd6ab)
-    - [wire](#orgea8c782)
-    - [reg](#org7df7305)
-  - [[Data Type Declarations](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=15)](#org3b431bd)
+- [Verilog Intro](#org8f9786e)
+  - [Basic Building Block &#x2013; modules](#orgcb178f2)
+  - [Procedural Blocks](#org83d24ce)
+    - [Types](#orgef954bd)
+  - [Variable types:](#orgef009cb)
+    - [wire](#org37785c7)
+    - [reg](#org3e21c62)
+    - [other types:](#org22c4765)
+  - [Logic Values](#org6231a42)
+  - [Literal Integer Numbers](#org881abad)
+  - [Operators](#org3ab2a03)
+  - [Primitive Instances](#org2ff505a)
   - [Vivado](#vivado)
   - [[Download Vivado 2017.2](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools/archive.html)](#download-vivado-2017.2)
   - [Installation](#installation)
@@ -68,34 +72,46 @@
     -   Simulation for all the modeling
 
 
-<a id="orga560c24"></a>
+<a id="org8f9786e"></a>
 
 # Verilog Intro
 
 
-<a id="org088c1aa"></a>
+<a id="orgcb178f2"></a>
 
 ## Basic Building Block &#x2013; modules
 
+-   See [Module Definition (page 12)](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=12)
 -   Basic abstraction unit
 -   Has input and output
     -   modules that do not have IOs are used for testing only.
--   One module per verilog file
--   For example:
+-   One module per verilog file (.v)
+-   For example, the following is a module called `halfadder`, with two input ports name `a`, `b`, and two output ports `s`, `c`
 
 ```verilog
-module halfadder (input a, b, output s, c); // <---- module declaration
+module halfadder (input a, input b, output s, output c); // <---- module declaration always ends with a ;
+
+endmodule // halfadder
+```
+
+You can group ports that are the same type together and write them in multiple lines as long as you do not forget about the ending ";"
+
+```verilog
+module halfadder (input a, b,
+                  output s, c); // <---- module declaration always ends with a ;
 
 endmodule // halfadder
 ```
 
 
-<a id="org9d0d2a9"></a>
+<a id="org83d24ce"></a>
 
 ## Procedural Blocks
 
+See [Procedural Blocks (page 27)](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=27)
 
-<a id="orgc6ee982"></a>
+
+<a id="orgef954bd"></a>
 
 ### Types
 
@@ -105,52 +121,106 @@ endmodule // halfadder
 -   **always** blocks are an infinite loop which process statements repeatedly.
 
 
-<a id="org89fd6ab"></a>
+<a id="orgef009cb"></a>
 
 ## Variable types:
 
+See [Data Type Declarations (page 15)](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=15)
 
-<a id="orgea8c782"></a>
+
+<a id="org37785c7"></a>
 
 ### wire
 
 -   Used outside procedural blocks
--   Any variable that is not declared, it is assumed to be 1-bit wire.
+-   Used in IO ports by default
+-   Interconnecting wire, connect output to input
+-   Its value is driven by whatever the output it is connected to.
+-   **Note:** Any variable that is not declared, it is assumed to be 1-bit wire.
 
 
-<a id="org7df7305"></a>
+<a id="org3e21c62"></a>
 
 ### reg
 
+-   The driver (behavior) of any `reg` variable must be define in the module the variable is declared.
 -   Used inside procedural blocks
 -   Must be declared outside procedural blocks
 -   **Note:** reg is **not** register. Used to be, not anymore.
+-   When used in IO ports, only outputs can be declared as `reg`
 
 
-<a id="org3b431bd"></a>
+<a id="org22c4765"></a>
 
-## [Data Type Declarations](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=15)
+### other types:
 
--   **wire**
-    -   Interconnecting wire, connect output to input
-    -   Its value is driven by whatever the output it is connected to.
-    -   Can be either input or output type. <!-- - **reg** --> <!-- - A variable whose behavior need to be defined. **NOTE: It's not a register** --> <!-- - Driver / behavior is defined in ```always``` or ```initial``` block. --> <!-- - Could be used as output type. --> <!-- - Should not be used as input type. -->
+There are several other types available in Verilog (see ), but we are going to stick with just `wire` and `reg` in this class.
 
--   Logic Values
+By default, IO ports are considered as `wire`, unless `reg` is declared, for example:
 
-| Logic Values                          | Description                             | Simulation Color |
-|------------------------------------- |--------------------------------------- |---------------- |
-| <font color="green"> 0</font>         | zero, low, or false                     | Green            |
-| <font color="green"> 1</font>         | one, high, or true                      | Green            |
-| <font color="blue"> *z* or *Z*</font> | high impedence (tri-stated or floating) | Blue             |
-| <font color="red"> *x* or *X*</font>  | unknown or uninitialized or don't-care  | Red              |
+```verilog
+module halfadder (input a, b,       // a, b are implicitly declared as wire
+                  output reg s, c); // s, c are explicitly declared as reg
 
--   [Operators (page 33)](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=33)
--   [Module Definition (page 12)](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=12)
+endmodule // halfadder
+```
+
+
+<a id="org6231a42"></a>
+
+## Logic Values
+
+| Logic Values                          | Description                             |
+|------------------------------------- |--------------------------------------- |
+| <font color="green"> 0</font>         | zero, low, or false                     |
+| <font color="green"> 1</font>         | one, high, or true                      |
+| <font color="blue"> *z* or *Z*</font> | high impedence (tri-stated or floating) |
+| <font color="red"> *x* or *X*</font>  | unknown or uninitialized or don't-care  |
+
+
+<a id="org881abad"></a>
+
+## Literal Integer Numbers
+
+See [Literal Integer Numbers (page 11)](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=11)
+
+| **Format**      | **Representation**                       |
+|--------------- |---------------------------------------- |
+| value           | unsized decimal integer                  |
+| size'base value | sized integer in a specific radis (base) |
+
+| Radix      | Symbol | Legal Values                     |
+|---------- |------ |-------------------------------- |
+| Binary     | 'b     | 0, 1, x, X, z, Z, ?, \_          |
+| Octal      | 'o     | 0-7, x, X, z, Z, ?, \_           |
+| Decimal    | 'd     | 0-9, \_                          |
+| Hexdecimal | 'h     | 0-9, a-f, A-F, x, X, z, Z, ?, \_ |
 
 Example:
 
--   Behavior modeling:
+| Examples | Size    | Radix      | Binary Equivalent         |
+|-------- |------- |---------- |------------------------- |
+| 10       | unsized | decimal    | 0 &#x2026; 01010 (32-bit) |
+| 'o7      | unsized | octal      | 0 &#x2026; 00111 (32-bit) |
+| 1'b1     | 1 bit   | binary     | 1                         |
+| 8'hAB    | 8 bits  | hexdecimal | 10101011                  |
+| 6'hF0    | 6 bits  | hexdecimal | 110000 (truncated)        |
+| 6'hA     | 6 bits  | hexdecimal | 001010 (zero filled)      |
+| 6'bz     | 6 bits  | binary     | zzzzzz (z filled)         |
+
+
+<a id="org3ab2a03"></a>
+
+## Operators
+
+See [Operators (page 33)](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=33)
+
+
+<a id="org2ff505a"></a>
+
+## Primitive Instances
+
+See [Primitive Instances (page 19)](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=23)
 
 ```verilog
 module halfadder (input a, b,
@@ -208,7 +278,8 @@ endmodule
 
 Here, the two inputs a, b are vector bits, which means they are 2-bit input wires. While sum is a 2-bit output wire.
 
--   [Procedural Blocks](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=27)
+-   
+
 -   `initial`
     -   Mostly used in simulation (or initializing registers, depending on compiler support)
     -   Could have multiple `initial` block <!-- - ```always``` --> <!-- - It is used for defining behaviors of **reg** type --> <!-- - We will talk more about this in the future -->
