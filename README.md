@@ -3,24 +3,21 @@
   - [[Transistor Count of CPUs](https://en.wikipedia.org/wiki/Transistor_count)](#transistor-count-of-cpus)
   - [Commonly used HDL (Hardware Description Languages)](#commonly-used-hdl-hardware-description-languages)
   - [Verilog Usage](#verilog)
-- [Verilog Intro](#org8f9786e)
-  - [Basic Building Block &#x2013; modules](#orgcb178f2)
-  - [Procedural Blocks](#org83d24ce)
-    - [Types](#orgef954bd)
-  - [Variable types:](#orgef009cb)
-    - [wire](#org37785c7)
-    - [reg](#org3e21c62)
-    - [other types:](#org22c4765)
-  - [Logic Values](#org6231a42)
-  - [Literal Integer Numbers](#org881abad)
-  - [Operators](#org3ab2a03)
-  - [Primitive Instances](#org2ff505a)
-  - [Vivado](#vivado)
-  - [[Download Vivado 2017.2](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools/archive.html)](#download-vivado-2017.2)
-  - [Installation](#installation)
-  - [[Vivado Naming Convention](https://www.xilinx.com/support/documentation/sw_manuals/xilinx2017_2/ug973-vivado-release-notes-install-license.pdf#page=5)](#vivado-naming-convention)
-  - [Creating Project](#creating-project)
-  - [Simulation](#simulation)
+- [Verilog Intro](#orgb62c4e0)
+  - [Basic Building Block &#x2013; modules](#org66cdedb)
+  - [Procedural Blocks](#org09ea4fe)
+    - [Types](#org9fb25d4)
+  - [Data Types:](#org1a8abc7)
+    - [wire](#orgf9b40ae)
+    - [reg](#org4a3e310)
+    - [other types:](#org38c6b65)
+  - [Logic Values](#org1cba00a)
+  - [Literal Integer Numbers](#org0737ce4)
+  - [Operators](#org00f08e7)
+  - [Module Instances](#org5125ad9)
+  - [Primitive Instances](#org4d33ff1)
+  - [Vector bits](#orgee2f835)
+  - [Testing](#org142a858)
 
 
 
@@ -72,16 +69,27 @@
     -   Simulation for all the modeling
 
 
-<a id="org8f9786e"></a>
+<a id="orgb62c4e0"></a>
 
 # Verilog Intro
 
 
-<a id="orgcb178f2"></a>
+<a id="org66cdedb"></a>
 
 ## Basic Building Block &#x2013; modules
 
 -   See [Module Definition (page 12)](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=12)
+
+```verilog
+module module_name
+   #(parameter_declaration, parameter_declaration, ...) // <--- optional
+   (port_declaration port_name, port_name, ...,
+    port_declaration port_name, port_name, ...); // <--- if the module does not have any ports, the empty parenthesis
+                                                 //      can be omitted, but the ";" should always be there.
+   module_items
+endmodule
+```
+
 -   Basic abstraction unit
 -   Has input and output
     -   modules that do not have IOs are used for testing only.
@@ -104,14 +112,14 @@ endmodule // halfadder
 ```
 
 
-<a id="org83d24ce"></a>
+<a id="org09ea4fe"></a>
 
 ## Procedural Blocks
 
 See [Procedural Blocks (page 27)](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=27)
 
 
-<a id="orgef954bd"></a>
+<a id="org9fb25d4"></a>
 
 ### Types
 
@@ -121,14 +129,14 @@ See [Procedural Blocks (page 27)](http://sutherland-hdl.com/pdfs/verilog_2001_re
 -   **always** blocks are an infinite loop which process statements repeatedly.
 
 
-<a id="orgef009cb"></a>
+<a id="org1a8abc7"></a>
 
-## Variable types:
+## Data Types:
 
 See [Data Type Declarations (page 15)](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=15)
 
 
-<a id="org37785c7"></a>
+<a id="orgf9b40ae"></a>
 
 ### wire
 
@@ -139,7 +147,7 @@ See [Data Type Declarations (page 15)](http://sutherland-hdl.com/pdfs/verilog_20
 -   **Note:** Any variable that is not declared, it is assumed to be 1-bit wire.
 
 
-<a id="org3e21c62"></a>
+<a id="org4a3e310"></a>
 
 ### reg
 
@@ -150,7 +158,7 @@ See [Data Type Declarations (page 15)](http://sutherland-hdl.com/pdfs/verilog_20
 -   When used in IO ports, only outputs can be declared as `reg`
 
 
-<a id="org22c4765"></a>
+<a id="org38c6b65"></a>
 
 ### other types:
 
@@ -166,7 +174,7 @@ endmodule // halfadder
 ```
 
 
-<a id="org6231a42"></a>
+<a id="org1cba00a"></a>
 
 ## Logic Values
 
@@ -178,7 +186,7 @@ endmodule // halfadder
 | <font color="red"> *x* or *X*</font>  | unknown or uninitialized or don't-care  |
 
 
-<a id="org881abad"></a>
+<a id="org0737ce4"></a>
 
 ## Literal Integer Numbers
 
@@ -209,45 +217,38 @@ Example:
 | 6'bz     | 6 bits  | binary     | zzzzzz (z filled)         |
 
 
-<a id="org3ab2a03"></a>
+<a id="org00f08e7"></a>
 
 ## Operators
 
 See [Operators (page 33)](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=33)
 
-
-<a id="org2ff505a"></a>
-
-## Primitive Instances
-
-See [Primitive Instances (page 19)](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=23)
-
 ```verilog
 module halfadder (input a, b,
                   output s, c);
 
-     assign s = a ^ b;
+     assign s = a ^ b;  // <---- this is called continues assignment, s must be a "wire" type
      assign c = a & b;
 
 endmodule // halfadder
 ```
 
--   Gate level modeling:
+This is always called behavior modeling, since the xor and and operation is done using a operator.
 
-```verilog
-module halfadder (input a, b,
-                  output s, c);
 
- xor(s, a, b);
- and(c, a, b);
+<a id="org5125ad9"></a>
 
-endmodule // halfadder
+## Module Instances
+
+See [Module Instances (page 21)](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=21)
+
+Basic syntax:
+
+```
+module_name instance_name  (.port_name(signal), .port_name(signal), ... );
 ```
 
--   By default, if you just specify input or output, the signal is assumed to be wire.
--   **Any undeclared signal** is assumed to be 1 bit wire.
-
--   [Module Instances (page 21)](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=21) Example:
+Example:
 
 ```verilog
 module fulladder (input a, b, cin,
@@ -255,7 +256,8 @@ module fulladder (input a, b, cin,
 
    wire s1, c1, c2;
 
-   halfadder HA1(.a(a), .b(b), .s(s1), .c(c1));
+   halfadder HA1(.a(a), .b(b), .s(s1), .c(c1)); // <-------- the a, b, s, c outside the parenthesis referring to
+                                                //           the IO ports of halfadder module
    halfadder HA2(.a(s1), .b(cin), .s(sum), .c(c2));
 
    assign cout = c1 | c2; // and(cout, c1, c2);
@@ -263,139 +265,96 @@ module fulladder (input a, b, cin,
 endmodule // fulladder
 ```
 
--   **Must** use dot syntax to instantiate modules for assignments
--   [Primitive Instances (page 23)](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=23)
--   Primitive instances do not use dot syntax
--   [Vector Bit Select and Part Selects (page 19)](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=19) Example:
+
+<a id="org4d33ff1"></a>
+
+## Primitive Instances
+
+See [Primitive Instances (page 19)](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=23)
+
+This is gate level modeling
 
 ```verilog
-module ripple_adder_2bits(input [1:0] a, b,
+module halfadder (input a, b,
+                  output s, c);
+
+ xor(s, a, b);  // <------- when using primitive instances output is always the first port
+ and(c, a, b);
+
+endmodule // halfadder
+```
+
+
+<a id="orgee2f835"></a>
+
+## Vector bits
+
+See [Vector Bit Select and Part Selects (page 16)](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=16)
+
+| **Selection**        | **Syntax**                                                                                             |
+|-------------------- |------------------------------------------------------------------------------------------------------ |
+| Bit Select           | vector<sub>name</sub> [bit<sub>number</sub>]                                                           |
+| Constant Part Select | vector<sub>name</sub> [bit<sub>number</sub> : bit<sub>number</sub>]                                    |
+| Variable Part Select | vector<sub>name</sub> [starting<sub>bit</sub><sub>number</sub>+:part<sub>select</sub><sub>width</sub>] |
+|                      | vector<sub>name</sub> [starting<sub>bit</sub><sub>number</sub>+:part<sub>select</sub><sub>width</sub>] |
+
+Example:
+
+```verilog
+module ripple_adder_2bits(input [3:0] a, b,   // <--- both a and b are 2-bit
                           input cin,
-                          output [1:0] sum,
+                          output [3:0] sum,
                           output cout);
+   assign sum = 4'hA;  // <----- sum refers to all 4-bit
+   assign sum[1:0] = a[1:0] ^ b[1:0]; // <--- you can select just a part of sum
+   assign sum[3-:3] = a[3:1] ^ b[3:1]; // <---- sum[3-:3] is equivalent to sum[3:1] here
 endmodule
 ```
 
-Here, the two inputs a, b are vector bits, which means they are 2-bit input wires. While sum is a 2-bit output wire.
 
--   
+<a id="org142a858"></a>
 
--   `initial`
-    -   Mostly used in simulation (or initializing registers, depending on compiler support)
-    -   Could have multiple `initial` block <!-- - ```always``` --> <!-- - It is used for defining behaviors of **reg** type --> <!-- - We will talk more about this in the future -->
+## Testing
 
-<div class="HTML">
-<!&#x2013; - [Common System Tasks and Functions](<http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=42>) &#x2013;>
+```verilog
+module halfadder_test;
+   reg a_in, b_in;   // <--- since we need to change inputs, they need to be declared as reg
+   wire c_out, s_out; // <---- since the outputs will be driven by the halfadder instance,
+                      //       they need to be declared as wire
+   halfadder HA(.a(a_in), .b(b_in), .c(c_out), .s(s_out)); // <--- You need to have a instance of
+                                                           //      the module you want to build
+   initial
+      begin
+         {a_in, b_in} = 2'b00; // <--- For simplicity we are changing a_in, b_in together
+         #10;                  // <--- Need to specify a delay so cat we can observe the output
+                               //      for this test case
+         {a_in, b_in} = 2'b01; #10;
+         {a_in, b_in} = 2'b10; #10;
+         {a_in, b_in} = 2'b11; #10;
+         $finish;              // <--- If you know exactly how long the testing need to run
+                               //      stop the simulation when it is done.
+      end
+endmodule
+```
 
-</div>
+You can use a for loop for testing, for example:
 
-<div class="HTML">
-<!&#x2013; - [Generate Block](<http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=25>) &#x2013;>
-
-</div>
-
-
-<a id="vivado"></a>
-
-## Vivado
-
-
-<a id="download-vivado-2017.2"></a>
-
-## [Download Vivado 2017.2](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools/archive.html)
-
-
-<a id="installation"></a>
-
-## Installation
-
--   Make sure you select the WebPACK edition (first option). It's free, no license required, and has all the features we need.
--   After installed vivado, [install board files](https://reference.digilentinc.com/reference/software/vivado/board-files)
-
-
-<a id="vivado-naming-convention"></a>
-
-## [Vivado Naming Convention](https://www.xilinx.com/support/documentation/sw_manuals/xilinx2017_2/ug973-vivado-release-notes-install-license.pdf#page=5)
-
-
-<a id="creating-project"></a>
-
-## Creating Project
-
-**Note**: the following screenshots are captured with Vivado 2017.2.1, layout might be a bit different but you should be able find all the buttons in 2014 version.
-
-1.  Clone this assignment repo to your local machine, make sure you know the path
-
-![img](pics/clone_repo.png "clone\\<sub>repo</sub>")
-
-Note that the path of my assignment repo is `/home/zcai/repos/digital-logic-lab-05`
-
-1.  Create project Choose your project path and project name **DO NOT** create project subdirectory. ![img](pics/startup.png)
-
-when choosing path, make sure:
-
--   **Uncheck** "create project subdirectory" option, **It's a MUST**
--   Choose the path to be your assignment repository's folder
-
-![img](pics/project_name_marked.png "name\\<sub>and</sub>\\<sub>path</sub>")
-
-Hardware part is not important this time, choose anything and go to next.
-
-![img](pics/create_project_select_part.png "select\\<sub>part</sub>")
-
-1.  Add or create files <!-- - All sources files, i.e. files end with .v extention, must be stored in src directory in your assignment. (If src is not there, create a folder named "src"). --> Verilog files can be created inside or outside vivado. If you created the file outside vivado, you need to add it to the project when you want to use it.
-
-There are two different types of source files to Vivado: - Design source: Regular modules that can be implmeneted in hardware - Simulation source: Modules that strickly only used in simulation, usually these are just modules contain your test code.
-
-There is also a type of file called constraint file that specify your target hardware's configuration. They are not considered sources, and are usually provided by hardware vendors. Since we are only doing simulation here, we won't be need it this time.
-
-**For this lab, I require ALL source files, i.e. both design sources and simulation sources, to be placed in "src" folder of assignment folder.** Constraint file should be placed in "constrs" folder.
-
-We will only be dealing with simulation for this lab. So we will need to create a simulation set. \*Note that, for assignment, I will specify the exact simulation set's name, you need to name your simulation sets to be the exact name I specified in the assignment\*
-
-Right click anywhere on "Sources" window, and choose "Edit simulation Sets &#x2026;": ![img](pics/edit_simulation_set.png)
-
-Then click on the drop down menu and choose "Create Simulation Set &#x2026;"
-
-![img](pics/create_simulation_set_marked.png "create\\<sub>simulation</sub>\\<sub>set</sub>")
-
-We will name the simulation set as "halfadder\\<sub>test</sub>". **Note: there cannot be space in any simulation set's name**. Since we are going to use this simulation, we will mark this simulation set as **active**. (You can also do this in Sources window by right clicking a non-active simulation set, and choose "make active" from the menu)
-
-![img](pics/edit_simulation_set_make_active_marked.png "make\\<sub>active</sub>")
-
-To add a file click on the "Add Files" button in the same window, browse and select desired file. However, do make sure **UNCHECK the "copy sources into project" option**.
-
-![img](pics/add_files_uncheck.png "add\\<sub>files</sub>\\<sub>no</sub>\\<sub>copy</sub>")
-
-In the same window, you can also create file. However, do make sure you **specify the file location**. Otherwise, Vivado will automatically store it in a location that will not be tracked by git.
-
-![img](pics/create_file_choose_location.png "choose\\<sub>location</sub>")
-
-The location must be the "src" directory inside your assignment folder
-
-![img](pics/file_location.png "file\\<sub>location</sub>")
-
-This what it looks like after adding a file and creating a file, not that they both in "src" directory:
-
-![img](pics/files_added_and_created.png "files\\<sub>added</sub>\\<sub>and</sub>\\<sub>created</sub>")
-
-Whenever you are creating a file with Vivado, the following window will pop up and asking you to specify inputs and outputs. Skip this window, we will type in inputs and outputs manually.
-
-![img](pics/create_file_IO_spec.png "skip IO")
-
-At the end, you will see the files we added and created will show up in "Sources" window and under halfadder\\<sub>test</sub>.
-
-![img](pics/added_and_created.png "added\\<sub>and</sub>\\<sub>created</sub>")
-
-
-<a id="simulation"></a>
-
-## Simulation
-
-Click on run simulation, and here is the default layout:
-
-![img](pics/simulation_default_layout.png "default\\<sub>layout</sub>")
-
-Click on "zoom fit" to have the best view of your timing diagram
-
-![img](pics/zoom_fit_marked.png "zoom\\<sub>fit</sub>")
+```verilog
+module halfadder_test;
+   reg a_in, b_in;   // <--- since we need to change inputs, they need to be declared as reg
+   wire c_out, s_out; // <---- since the outputs will be driven by the halfadder instance,
+                      //       they need to be declared as wire
+   halfadder HA(.a(a_in), .b(b_in), .c(c_out), .s(s_out)); // <--- You need to have a instance of
+                                                           //      the module you want to build
+   initial
+      begin
+        integer i;
+        for (i = 0; i <= 3; i = i + 1)
+          begin
+            {a_in, b_in} = i[1:0];
+            #10;
+          end
+        $finish;
+      end
+endmodule
+```

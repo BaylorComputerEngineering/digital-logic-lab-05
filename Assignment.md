@@ -26,14 +26,14 @@ Your simulation sets should look something like this before you submit:
 
 ## Problems
 
-### 1. Implement and test a two bits ripple adder (5 pts)
+### 1. Implement and test a 4-bits ripple adder (5 pts)
 - Name the simulation set as ```ripple_test```
 - Name the ripple adder module as ```ripple_adder```
 - Implmenent the ripple adder using the full adder module we have built in the lab
 - Write a test module to verify the correctness of your ripple adder
 - Save your timing diagram as ```ripple_test_sim```. So when I load your project and run this simulation, the saved timing diagram should show up, not the "untitle 1".
 
-### 2. Implement and test a two bits adder subtractor (5 pts)
+### 2. Implement and test a 4-bits adder subtractor (5 pts)
 - Name the simulation set as ```adder_subtractor_test```
 - Name the adder subtractor module as ```adder_subtractor```
 - Implement the adder subtractor **using the ripple adder** from problem 1.

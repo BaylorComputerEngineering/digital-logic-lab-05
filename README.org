@@ -59,6 +59,16 @@
 * Verilog Intro
 *** Basic Building Block -- modules
     - See [[http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=12][Module Definition (page 12)]]
+    #+begin_src verilog :export code
+    module module_name
+       #(parameter_declaration, parameter_declaration, ...) // <--- optional
+       (port_declaration port_name, port_name, ...,
+        port_declaration port_name, port_name, ...); // <--- if the module does not have any ports, the empty parenthesis
+                                                     //      can be omitted, but the ";" should always be there.
+       module_items
+    endmodule
+    #+end_src
+
     - Basic abstraction unit
     - Has input and output
       - modules that do not have IOs are used for testing only.
@@ -90,7 +100,7 @@ endmodule // halfadder
         - Sometimes could be used for initializing variables.
       - *always* blocks are an infinite loop which process statements repeatedly.
 
-*** Variable types:
+*** Data Types:
     See [[http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=15][Data Type Declarations (page 15)]]
 ***** wire
       - Used outside procedural blocks
@@ -134,7 +144,6 @@ endmodule // halfadder
 | size'base value | sized integer in a specific radis (base) |
 
 
-
 #+caption: Sized integer format
 | Radix      | Symbol | Legal Values                    |
 |------------+--------+---------------------------------|
@@ -160,238 +169,272 @@ Example:
 *** Operators
     See [[http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=33][Operators (page 33)]]
 
+    #+begin_src verilog :export code
+    module halfadder (input a, b,
+                      output s, c);
+
+         assign s = a ^ b;  // <---- this is called continues assignment, s must be a "wire" type
+         assign c = a & b;
+
+    endmodule // halfadder
+    #+end_src
+
+    This is always called behavior modeling, since the xor and and operation is done using a operator.
+
+*** Module Instances
+    See [[http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=21][Module Instances (page 21)]]
+
+    Basic syntax:
+    #+begin_src
+    module_name instance_name  (.port_name(signal), .port_name(signal), ... );
+    #+end_src
+
+    Example:
+    #+begin_src verilog :exports code
+    module fulladder (input a, b, cin,
+                      output sum, cout);
+
+       wire s1, c1, c2;
+
+       halfadder HA1(.a(a), .b(b), .s(s1), .c(c1)); // <-------- the a, b, s, c outside the parenthesis referring to
+                                                    //           the IO ports of halfadder module
+       halfadder HA2(.a(s1), .b(cin), .s(sum), .c(c2));
+
+       assign cout = c1 | c2; // and(cout, c1, c2);
+
+    endmodule // fulladder
+    #+end_src
+
 *** Primitive Instances
     See [[http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=23][Primitive Instances (page 19)]]
 
+    This is gate level modeling
+    #+begin_src verilog
+    module halfadder (input a, b,
+                      output s, c);
+
+     xor(s, a, b);  // <------- when using primitive instances output is always the first port
+     and(c, a, b);
+
+    endmodule // halfadder
+    #+end_src
+
+*** Vector bits
+    See [[http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=16][Vector Bit Select and Part Selects (page 16)]]
+
+| *Selection*          | *Syntax*                                             |
+|----------------------+------------------------------------------------------|
+| Bit Select           | vector_name [bit_number]                             |
+| Constant Part Select | vector_name [bit_number : bit_number]                |
+| Variable Part Select | vector_name [starting_bit_number+:part_select_width] |
+|                      | vector_name [starting_bit_number+:part_select_width] |
+
+    Example:
+    #+begin_src verilog
+    module ripple_adder_2bits(input [3:0] a, b,   // <--- both a and b are 2-bit
+                              input cin,
+                              output [3:0] sum,
+                              output cout);
+       assign sum = 4'hA;  // <----- sum refers to all 4-bit
+       assign sum[1:0] = a[1:0] ^ b[1:0]; // <--- you can select just a part of sum
+       assign sum[3-:3] = a[3:1] ^ b[3:1]; // <---- sum[3-:3] is equivalent to sum[3:1] here
+    endmodule
+    #+end_src
+*** Testing
+    #+begin_src verilog :export code
+    module halfadder_test;
+       reg a_in, b_in;   // <--- since we need to change inputs, they need to be declared as reg
+       wire c_out, s_out; // <---- since the outputs will be driven by the halfadder instance,
+                          //       they need to be declared as wire
+       halfadder HA(.a(a_in), .b(b_in), .c(c_out), .s(s_out)); // <--- You need to have a instance of
+                                                               //      the module you want to build
+       initial
+          begin
+             {a_in, b_in} = 2'b00; // <--- For simplicity we are changing a_in, b_in together
+             #10;                  // <--- Need to specify a delay so cat we can observe the output
+                                   //      for this test case
+             {a_in, b_in} = 2'b01; #10;
+             {a_in, b_in} = 2'b10; #10;
+             {a_in, b_in} = 2'b11; #10;
+             $finish;              // <--- If you know exactly how long the testing need to run
+                                   //      stop the simulation when it is done.
+          end
+    endmodule
+    #+end_src
+
+    You can use a for loop for testing, for example:
+    #+begin_src verilog :export code
+    module halfadder_test;
+       reg a_in, b_in;   // <--- since we need to change inputs, they need to be declared as reg
+       wire c_out, s_out; // <---- since the outputs will be driven by the halfadder instance,
+                          //       they need to be declared as wire
+       halfadder HA(.a(a_in), .b(b_in), .c(c_out), .s(s_out)); // <--- You need to have a instance of
+                                                               //      the module you want to build
+       initial
+          begin
+            integer i;
+            for (i = 0; i <= 3; i = i + 1)
+              begin
+                {a_in, b_in} = i[1:0];
+                #10;
+              end
+            $finish;
+          end
+    endmodule
+    #+end_src
+
+
+# ** Vivado
+#    :PROPERTIES:
+#    :CUSTOM_ID: vivado
+#    :END:
+
+# *** [[https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools/archive.html][Download Vivado 2017.2]]
+#     :PROPERTIES:
+#     :CUSTOM_ID: download-vivado-2017.2
+#     :END:
+
+# *** Installation
+#     :PROPERTIES:
+#     :CUSTOM_ID: installation
+#     :END:
+
+# -  Make sure you select the WebPACK edition (first option). It's free,
+#    no license required, and has all the features we need.
+# -  After installed vivado,
+#    [[https://reference.digilentinc.com/reference/software/vivado/board-files][install board files]]
+
+# *** [[https://www.xilinx.com/support/documentation/sw_manuals/xilinx2017_2/ug973-vivado-release-notes-install-license.pdf#page=5][Vivado Naming Convention]]
+#     :PROPERTIES:
+#     :CUSTOM_ID: vivado-naming-convention
+#     :END:
+
+# *** Creating Project
+#     :PROPERTIES:
+#     :CUSTOM_ID: creating-project
+#     :END:
 
-#+begin_src verilog
-module halfadder (input a, b,
-                  output s, c);
+# *Note*: the following screenshots are captured with Vivado 2017.2.1,
+# layout might be a bit different but you should be able find all the
+# buttons in 2014 version.
 
-     assign s = a ^ b;
-     assign c = a & b;
+# 1. Clone this assignment repo to your local machine, make sure you know
+#    the path
 
-endmodule // halfadder
-#+end_src
+# #+CAPTION: clone\_repo
+# [[file:pics/clone_repo.png]]
 
--  Gate level modeling:
+# Note that the path of my assignment repo is
+# =/home/zcai/repos/digital-logic-lab-05=
 
-#+begin_src verilog
-module halfadder (input a, b,
-                  output s, c);
+# 2. Create project Choose your project path and project name *DO NOT*
+#    create project subdirectory. [[file:pics/startup.png]]
 
- xor(s, a, b);
- and(c, a, b);
+# when choosing path, make sure:
 
-endmodule // halfadder
-#+end_src
+# -  *Uncheck* "create project subdirectory" option, *It's a MUST*
+# -  Choose the path to be your assignment repository's folder
 
+# #+CAPTION: name\_and\_path
+# [[file:pics/project_name_marked.png]]
 
--  By default, if you just specify input or output, the signal is
-   assumed to be wire.
--  *Any undeclared signal* is assumed to be 1 bit wire.
+# Hardware part is not important this time, choose anything and go to
+# next.
 
--  [[http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=21][Module Instances (page 21)]] Example:
+# #+CAPTION: select\_part
+# [[file:pics/create_project_select_part.png]]
 
-#+begin_src verilog :exports code
-module fulladder (input a, b, cin,
-                  output sum, cout);
+# 3. Add or create files
+#    @@html:<!-- - All sources files, i.e. files end with .v extention, must be stored in src directory in your assignment. (If src is not there, create a folder named "src"). -->@@
+#    Verilog files can be created inside or outside vivado. If you created
+#    the file outside vivado, you need to add it to the project when you
+#    want to use it.
 
-   wire s1, c1, c2;
+# There are two different types of source files to Vivado: - Design
+# source: Regular modules that can be implmeneted in hardware - Simulation
+# source: Modules that strickly only used in simulation, usually these are
+# just modules contain your test code.
 
-   halfadder HA1(.a(a), .b(b), .s(s1), .c(c1));
-   halfadder HA2(.a(s1), .b(cin), .s(sum), .c(c2));
+# There is also a type of file called constraint file that specify your
+# target hardware's configuration. They are not considered sources, and
+# are usually provided by hardware vendors. Since we are only doing
+# simulation here, we won't be need it this time.
 
-   assign cout = c1 | c2; // and(cout, c1, c2);
+# *For this lab, I require ALL source files, i.e. both design sources and
+# simulation sources, to be placed in "src" folder of assignment folder.*
+# Constraint file should be placed in "constrs" folder.
 
-endmodule // fulladder
-#+end_src
+# We will only be dealing with simulation for this lab. So we will need to
+# create a simulation set. *Note that, for assignment, I will specify the
+# exact simulation set's name, you need to name your simulation sets to be
+# the exact name I specified in the assignment*
 
-- *Must* use dot syntax to instantiate modules for assignments
--  [[http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=23][Primitive Instances (page 23)]]
--  Primitive instances do not use dot syntax
--  [[http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=19][Vector Bit Select and Part Selects (page 19)]] Example:
+# Right click anywhere on "Sources" window, and choose "Edit simulation
+# Sets ...": [[file:pics/edit_simulation_set.png]]
 
-#+begin_src verilog
-module ripple_adder_2bits(input [1:0] a, b,
-                          input cin,
-                          output [1:0] sum,
-                          output cout);
-endmodule
-#+end_src
+# Then click on the drop down menu and choose "Create Simulation Set ..."
 
-   Here, the two inputs a, b are vector bits, which means they are 2-bit
-   input wires. While sum is a 2-bit output wire.
+# #+CAPTION: create\_simulation\_set
+# [[file:pics/create_simulation_set_marked.png]]
 
--  
--  =initial=
+# We will name the simulation set as "halfadder\_test". *Note: there
+# cannot be space in any simulation set's name*. Since we are going to use
+# this simulation, we will mark this simulation set as *active*. (You can
+# also do this in Sources window by right clicking a non-active simulation
+# set, and choose "make active" from the menu)
 
-   -  Mostly used in simulation (or initializing registers, depending on
-      compiler support)
-   -  Could have multiple =initial= block
-      @@html:<!-- - ```always``` -->@@
-      @@html:<!--   - It is used for defining behaviors of **reg** type -->@@
-      @@html:<!--   - We will talk more about this in the future -->@@
+# #+CAPTION: make\_active
+# [[file:pics/edit_simulation_set_make_active_marked.png]]
 
-#+BEGIN_HTML
-  <!-- - [Common System Tasks and Functions](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=42) -->
-#+END_HTML
+# To add a file click on the "Add Files" button in the same window, browse
+# and select desired file. However, do make sure *UNCHECK the "copy
+# sources into project" option*.
 
-#+BEGIN_HTML
-  <!-- - [Generate Block](http://sutherland-hdl.com/pdfs/verilog_2001_ref_guide.pdf#page=25) -->
-#+END_HTML
+# #+CAPTION: add\_files\_no\_copy
+# [[file:pics/add_files_uncheck.png]]
 
-** Vivado
-   :PROPERTIES:
-   :CUSTOM_ID: vivado
-   :END:
+# In the same window, you can also create file. However, do make sure you
+# *specify the file location*. Otherwise, Vivado will automatically store
+# it in a location that will not be tracked by git.
 
-*** [[https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools/archive.html][Download Vivado 2017.2]]
-    :PROPERTIES:
-    :CUSTOM_ID: download-vivado-2017.2
-    :END:
+# #+CAPTION: choose\_location
+# [[file:pics/create_file_choose_location.png]]
 
-*** Installation
-    :PROPERTIES:
-    :CUSTOM_ID: installation
-    :END:
+# The location must be the "src" directory inside your assignment folder
 
--  Make sure you select the WebPACK edition (first option). It's free,
-   no license required, and has all the features we need.
--  After installed vivado,
-   [[https://reference.digilentinc.com/reference/software/vivado/board-files][install board files]]
+# #+CAPTION: file\_location
+# [[file:pics/file_location.png]]
 
-*** [[https://www.xilinx.com/support/documentation/sw_manuals/xilinx2017_2/ug973-vivado-release-notes-install-license.pdf#page=5][Vivado Naming Convention]]
-    :PROPERTIES:
-    :CUSTOM_ID: vivado-naming-convention
-    :END:
+# This what it looks like after adding a file and creating a file, not
+# that they both in "src" directory:
 
-*** Creating Project
-    :PROPERTIES:
-    :CUSTOM_ID: creating-project
-    :END:
+# #+CAPTION: files\_added\_and\_created
+# [[file:pics/files_added_and_created.png]]
 
-*Note*: the following screenshots are captured with Vivado 2017.2.1,
-layout might be a bit different but you should be able find all the
-buttons in 2014 version.
+# Whenever you are creating a file with Vivado, the following window will
+# pop up and asking you to specify inputs and outputs. Skip this window,
+# we will type in inputs and outputs manually.
 
-1. Clone this assignment repo to your local machine, make sure you know
-   the path
+# #+CAPTION: skip IO
+# [[file:pics/create_file_IO_spec.png]]
 
-#+CAPTION: clone\_repo
-[[file:pics/clone_repo.png]]
+# At the end, you will see the files we added and created will show up in
+# "Sources" window and under halfadder\_test.
 
-Note that the path of my assignment repo is
-=/home/zcai/repos/digital-logic-lab-05=
+# #+CAPTION: added\_and\_created
+# [[file:pics/added_and_created.png]]
 
-2. Create project Choose your project path and project name *DO NOT*
-   create project subdirectory. [[file:pics/startup.png]]
+# *** Simulation
+#     :PROPERTIES:
+#     :CUSTOM_ID: simulation
+#     :END:
 
-when choosing path, make sure:
+# Click on run simulation, and here is the default layout:
 
--  *Uncheck* "create project subdirectory" option, *It's a MUST*
--  Choose the path to be your assignment repository's folder
+# #+CAPTION: default\_layout
+# [[file:pics/simulation_default_layout.png]]
 
-#+CAPTION: name\_and\_path
-[[file:pics/project_name_marked.png]]
+# Click on "zoom fit" to have the best view of your timing diagram
 
-Hardware part is not important this time, choose anything and go to
-next.
-
-#+CAPTION: select\_part
-[[file:pics/create_project_select_part.png]]
-
-3. Add or create files
-   @@html:<!-- - All sources files, i.e. files end with .v extention, must be stored in src directory in your assignment. (If src is not there, create a folder named "src"). -->@@
-   Verilog files can be created inside or outside vivado. If you created
-   the file outside vivado, you need to add it to the project when you
-   want to use it.
-
-There are two different types of source files to Vivado: - Design
-source: Regular modules that can be implmeneted in hardware - Simulation
-source: Modules that strickly only used in simulation, usually these are
-just modules contain your test code.
-
-There is also a type of file called constraint file that specify your
-target hardware's configuration. They are not considered sources, and
-are usually provided by hardware vendors. Since we are only doing
-simulation here, we won't be need it this time.
-
-*For this lab, I require ALL source files, i.e. both design sources and
-simulation sources, to be placed in "src" folder of assignment folder.*
-Constraint file should be placed in "constrs" folder.
-
-We will only be dealing with simulation for this lab. So we will need to
-create a simulation set. *Note that, for assignment, I will specify the
-exact simulation set's name, you need to name your simulation sets to be
-the exact name I specified in the assignment*
-
-Right click anywhere on "Sources" window, and choose "Edit simulation
-Sets ...": [[file:pics/edit_simulation_set.png]]
-
-Then click on the drop down menu and choose "Create Simulation Set ..."
-
-#+CAPTION: create\_simulation\_set
-[[file:pics/create_simulation_set_marked.png]]
-
-We will name the simulation set as "halfadder\_test". *Note: there
-cannot be space in any simulation set's name*. Since we are going to use
-this simulation, we will mark this simulation set as *active*. (You can
-also do this in Sources window by right clicking a non-active simulation
-set, and choose "make active" from the menu)
-
-#+CAPTION: make\_active
-[[file:pics/edit_simulation_set_make_active_marked.png]]
-
-To add a file click on the "Add Files" button in the same window, browse
-and select desired file. However, do make sure *UNCHECK the "copy
-sources into project" option*.
-
-#+CAPTION: add\_files\_no\_copy
-[[file:pics/add_files_uncheck.png]]
-
-In the same window, you can also create file. However, do make sure you
-*specify the file location*. Otherwise, Vivado will automatically store
-it in a location that will not be tracked by git.
-
-#+CAPTION: choose\_location
-[[file:pics/create_file_choose_location.png]]
-
-The location must be the "src" directory inside your assignment folder
-
-#+CAPTION: file\_location
-[[file:pics/file_location.png]]
-
-This what it looks like after adding a file and creating a file, not
-that they both in "src" directory:
-
-#+CAPTION: files\_added\_and\_created
-[[file:pics/files_added_and_created.png]]
-
-Whenever you are creating a file with Vivado, the following window will
-pop up and asking you to specify inputs and outputs. Skip this window,
-we will type in inputs and outputs manually.
-
-#+CAPTION: skip IO
-[[file:pics/create_file_IO_spec.png]]
-
-At the end, you will see the files we added and created will show up in
-"Sources" window and under halfadder\_test.
-
-#+CAPTION: added\_and\_created
-[[file:pics/added_and_created.png]]
-
-*** Simulation
-    :PROPERTIES:
-    :CUSTOM_ID: simulation
-    :END:
-
-Click on run simulation, and here is the default layout:
-
-#+CAPTION: default\_layout
-[[file:pics/simulation_default_layout.png]]
-
-Click on "zoom fit" to have the best view of your timing diagram
-
-#+CAPTION: zoom\_fit
-[[file:pics/zoom_fit_marked.png]]
+# #+CAPTION: zoom\_fit
+# [[file:pics/zoom_fit_marked.png]]
